@@ -184,6 +184,32 @@ class EventRegistrationRepository extends ServiceEntityRepository
         return $this->createEventRegistrationCollection($this->findBy(['event' => $event]));
     }
 
+    /**
+     * @return EventRegistration[]|PaginatorInterface|iterable
+     */
+    public function findPaginatedByEvent(BaseEvent $event, int $page = 1, ?int $limit = 30): iterable
+    {
+        $qb = $this
+            ->createQueryBuilder('event_registration')
+            ->select('event_registration.createdAt AS subscription_date')
+            ->addSelect('IF(adherent.id IS NOT NULL, IF(adherent.adherent = 1, \'adherent\', \'user\'), \'contact\') AS type')
+            ->addSelect('IF(adherent.id IS NOT NULL, adherent.firstName, event_registration.firstName) AS first_name')
+            ->addSelect('IF(adherent.id IS NOT NULL, adherent.lastName, event_registration.lastName) AS last_name')
+            ->addSelect('IF(adherent.id IS NOT NULL, adherent.postAddress.postalCode, event_registration.postalCode) AS postal_code')
+            ->leftJoin(
+                Adherent::class,
+                'adherent',
+                Join::WITH,
+                'event_registration.adherentUuid = adherent.uuid'
+            )
+            ->where('event_registration.event = :event')
+            ->orderBy('event_registration.createdAt', 'ASC')
+            ->setParameter('event', $event)
+        ;
+
+        return $this->configurePaginator($qb, $page, $limit, null, false);
+    }
+
     public function isAlreadyRegistered(string $email, BaseEvent $event): bool
     {
         return (bool) $this

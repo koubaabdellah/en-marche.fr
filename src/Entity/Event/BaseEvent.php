@@ -151,6 +151,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             "defaults": {"_api_receive": false},
  *             "controller": "App\Controller\Api\Event\CancelEventController",
  *         },
+ *         "get_participants": {
+ *             "path": "/v3/events/{uuid}/participants",
+ *             "method": "GET",
+ *             "requirements": {"uuid": "%pattern_uuid%"},
+ *             "defaults": {"_api_receive": false},
+ *             "access_control": "is_granted('ROLE_OAUTH_SCOPE_JEMENGAGE_ADMIN') and is_granted('IS_FEATURE_GRANTED', 'events')",
+ *             "controller": "App\Controller\Api\Event\GetEventParticipantsController",
+ *         },
  *     },
  *     collectionOperations={
  *         "get": {
