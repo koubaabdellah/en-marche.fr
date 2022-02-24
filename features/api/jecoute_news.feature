@@ -487,6 +487,91 @@ Feature:
       | referent@en-marche-dev.fr | referent                                       |
       | senateur@en-marche-dev.fr | delegated_08f40730-d807-4975-8773-69d8fae1da74 |
 
+  Scenario Outline: As a (delegated) correspondent I can create and update a news
+    Given I am logged with "<user>" via OAuth client "JeMengage Web"
+    Then I should have 0 notification
+    When I add "Content-Type" header equal to "application/json"
+    And I send a "POST" request to "/api/v3/jecoute/news?scope=<scope>" with body:
+    """
+    {
+      "title": "Une nouvelle actualité d'aujourd'hui",
+      "text": "Vestibulum et lectus vehicula. Sed eget neque nec dolor gravida luctus.",
+      "external_link": "http://correspondent.en-marche.fr",
+      "notification": true,
+      "published": true,
+      "zone": "e3efe6fd-906e-11eb-a875-0242ac150002"
+    }
+    """
+    Then the response status code should be 201
+    And the JSON should be equal to:
+    """
+    {
+        "uuid": "@uuid@",
+        "title":  "Une nouvelle actualité d'aujourd'hui",
+        "text": "Vestibulum et lectus vehicula. Sed eget neque nec dolor gravida luctus.",
+        "external_link": "http://correspondent.en-marche.fr",
+        "visibility": "local",
+        "zone": {
+            "code": "92",
+            "created_at": "2020-12-04T15:24:38+01:00",
+            "name": "Hauts-de-Seine",
+            "uuid": "e3efe6fd-906e-11eb-a875-0242ac150002"
+        },
+        "created_at": "@string@.isDateTime()",
+        "notification": true,
+        "published": true,
+        "creator": "Jules Fullstack"
+    }
+    """
+    And I should have 1 notification "NewsCreatedNotification" with data:
+      | key   | value                                                                   |
+      | topic | staging_jemarche_department_92                                          |
+      | title | Une nouvelle actualité d'aujourd'hui                                    |
+      | body  | Vestibulum et lectus vehicula. Sed eget neque nec dolor gravida luctus. |
+      Examples:
+        | user                                | scope                                          |
+        | je-mengage-user-1@en-marche-dev.fr  | correspondent                                  |
+        | laura@deloche.com                   | delegated_2c6134f7-4312-45c4-9ab7-89f2b0731f86 |
+
+  Scenario Outline: As a (delegated) correspondent I can create and update a news
+    Given I am logged with "<user>" via OAuth client "JeMengage Web"
+    When I add "Content-Type" header equal to "application/json"
+    And I send a "PUT" request to "/api/v3/jecoute/news/<news_uuid>?scope=<scope>" with body:
+    """
+    {
+      "title": "Nouveau titre",
+      "text": "Nouveau text",
+      "external_link": "http://new.correspondent.en-marche.fr",
+      "notification": false,
+      "published": false
+    }
+    """
+    Then the response status code should be 200
+    And the JSON should be equal to:
+    """
+    {
+        "uuid": "<news_uuid>",
+        "title":  "Nouveau titre",
+        "text": "Nouveau text",
+        "external_link": "http://new.correspondent.en-marche.fr",
+        "visibility": "local",
+        "zone": {
+            "code": "92",
+            "created_at": "2020-12-04T15:24:38+01:00",
+            "name": "Hauts-de-Seine",
+            "uuid": "e3efe6fd-906e-11eb-a875-0242ac150002"
+        },
+        "created_at": "@string@.isDateTime()",
+        "notification": false,
+        "published": false,
+        "creator": "<user_name>"
+    }
+    """
+    Examples:
+      | user                                | user_name       | news_uuid                             | scope                                          |
+      | je-mengage-user-1@en-marche-dev.fr  | Jules Fullstack | b09185ba-f271-404b-a73f-76d92ca8c120  | correspondent                                  |
+      | laura@deloche.com                   | Laura Deloche   | 6101c6a6-f7ef-4952-95db-8553952d656d  | delegated_2c6134f7-4312-45c4-9ab7-89f2b0731f86 |
+
   Scenario Outline: As a (delegated) referent I can get a news
     Given I am logged with "<user>" via OAuth client "JeMengage Web"
     When I send a "GET" request to "/api/v3/jecoute/news/6c70f8e8-6bce-4376-8b9e-3ce342880673?scope=<scope>&page_size=10"
