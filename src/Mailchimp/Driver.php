@@ -186,7 +186,7 @@ class Driver implements LoggerAwareInterface
 
     public function getLastError(): ?string
     {
-        if ($this->lastResponse && ($data = $this->lastResponse->toArray()) && isset($data['detail'])) {
+        if ($this->lastResponse && ($data = $this->lastResponse->toArray(false)) && isset($data['detail'])) {
             return $data['detail'];
         }
 
