@@ -4,6 +4,7 @@ namespace App\Repository\Pap;
 
 use App\Entity\Pap\Address;
 use App\Entity\Pap\Campaign;
+use App\Entity\VotePlace;
 use App\Repository\GeoZoneTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -166,6 +167,27 @@ SQL;
         if (null !== $campaign->getSecondRoundPriority()) {
             $conditions[] = 'vote_place.second_round_priority >= :second_round_priority';
             $params['second_round_priority'] = $campaign->getSecondRoundPriority();
+        }
+
+        if (!$campaign->isNationalVisibility()) {
+            if ($campaign->getVotePlaces()->count() > 0) {
+                $conditions[] = 'vote_place.id IN (:campaign_vote_places)';
+                $params['campaign_vote_places'] = array_map(function (VotePlace $votePlace) {
+                    return $votePlace->getId();
+                }, $campaign->getVotePlaces()->toArray());
+            } elseif ($campaign->getZones()->count() > 0) {
+                $conditions[] = 'address.id IN (:address_ids)';
+                $params['address_ids'] = implode(',', array_column($this->createEntityInGeoZonesQueryBuilder(
+                        $campaign->getZones()->toArray(),
+                        Address::class,
+                        'a2',
+                        'zones',
+                        'z2'
+                    )
+                    ->getQuery()
+                    ->getArrayResult(), 'id'
+                ));
+            }
         }
 
         $sql = str_replace(
