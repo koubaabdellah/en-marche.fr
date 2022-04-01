@@ -40,8 +40,9 @@ class LoadAdherentMessageData extends Fixture implements DependentFixtureInterfa
         if ($filter = $this->getFilter(ReferentAdherentMessage::class)) {
             $message1->setFilter($filter);
         }
-        $message1->addMailchimpCampaign(new MailchimpCampaign($message1));
-        $message1->setFilter(new ReferentUserFilter([$this->getReference('referent_tag_75')]));
+        $message1->addMailchimpCampaign($mailchimp = new MailchimpCampaign($message1));
+        $message1->setFilter(new ReferentUserFilter([$tag = $this->getReference('referent_tag_75')]));
+        $mailchimp->setStaticSegmentId($tag->getExternalId());
 
         // message sent
         $message2 = ReferentAdherentMessage::createFromAdherent(
@@ -56,15 +57,15 @@ class LoadAdherentMessageData extends Fixture implements DependentFixtureInterfa
         if ($filter = $this->getFilter(ReferentAdherentMessage::class)) {
             $message2->setFilter($filter);
         }
-        $message2->addMailchimpCampaign(new MailchimpCampaign($message2));
-        $message2->setFilter(new ReferentUserFilter([$this->getReference('referent_tag_75')]));
+        $message2->addMailchimpCampaign($mailchimp = new MailchimpCampaign($message2));
+        $message2->setFilter(new ReferentUserFilter([$tag = $this->getReference('referent_tag_75')]));
         $message2->markAsSent();
+        $mailchimp->setStaticSegmentId($tag->getExternalId());
 
         $manager->persist($message1);
         $manager->persist($message2);
         $manager->flush();
 
-        $message = null;
         foreach ($this->getMessageClasses() as $class) {
             for ($i = 1; $i <= 100; ++$i) {
                 /** @var AdherentMessageInterface $message */
@@ -78,7 +79,10 @@ class LoadAdherentMessageData extends Fixture implements DependentFixtureInterfa
                 if ($filter = $this->getFilter($class)) {
                     $message->setFilter($filter);
                 }
-                $message->addMailchimpCampaign(new MailchimpCampaign($message));
+                $message->addMailchimpCampaign($mailchimp = new MailchimpCampaign($message));
+                if ($tag = $filter->getReferentTag()) {
+                    $mailchimp->setStaticSegmentId($tag->getExternalId());
+                }
                 $message->getMailchimpCampaigns()[0]->setSynchronized(true);
 
                 $manager->persist($message);

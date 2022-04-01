@@ -84,12 +84,9 @@ class AdherentMessageChangeSubscriber implements EventSubscriber
     public function postFlush(): void
     {
         foreach ($this->objects as $object) {
-            $this->dispatchMessage($object);
+            $this->bus->dispatch(new AdherentMessageChangeCommand($object->getUuid()));
         }
-    }
 
-    private function dispatchMessage(CampaignAdherentMessageInterface $object): void
-    {
-        $this->bus->dispatch(new AdherentMessageChangeCommand($object->getUuid()));
+        $this->objects = [];
     }
 }

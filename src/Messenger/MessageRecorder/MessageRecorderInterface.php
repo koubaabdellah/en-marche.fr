@@ -12,4 +12,6 @@ interface MessageRecorderInterface
      * @return Envelope[]|array
      */
     public function getMessages(): array;
+
+    public function removeMessages(int $key): void;
 }

@@ -78,3 +78,10 @@ services:
             $authCodeTtlInterval: 'PT60M'
             $accessTokenTtlInterval: '%env(ACCESS_TOKEN_TTL_INTERVAL)%'
             $refreshTokenTtlInterval: '%env(REFRESH_TOKEN_TTL_INTERVAL)%'
+
+    Tests\App\Test\HttpClient\ResponseFactory: ~
+
+    Tests\App\Test\HttpClient\MockHttpClient:
+        arguments: ['@Tests\App\Test\HttpClient\ResponseFactory']
+
+    app.http_client.mailchimp_api: '@Tests\App\Test\HttpClient\MockHttpClient'

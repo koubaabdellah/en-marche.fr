@@ -3,31 +3,42 @@
 namespace Tests\App;
 
 use App\Messenger\MessageRecorder\MessageRecorderInterface;
+use Symfony\Component\Messenger\Envelope;
 
 trait MessengerTestTrait
 {
     abstract protected function getMessageRecorder(): MessageRecorderInterface;
 
-    public function assertMessageIsDispatched(string $expectedMessageClass, string $help = ''): void
+    public function assertMessageIsDispatched(string $class, ?int $count = null, ?string $help = null): void
     {
-        $found = false;
+        $messages = $this->findMessages($class);
 
-        foreach ($this->getMessageRecorder()->getMessages() as $envelope) {
-            if (is_a($envelope->getMessage(), $expectedMessageClass)) {
-                $found = true;
-                break;
-            }
+        if (null === $count) {
+            self::assertNotEmpty($messages);
+        } else {
+            self::assertCount($count, $messages, $help ?? "Message $class not found $count times.");
         }
-
-        self::assertTrue($found, $help);
     }
 
     public function assertMessageIsNotDispatched(string $unexpectedMessageClass): void
     {
-        foreach ($this->getMessageRecorder()->getMessages() as $envelope) {
-            if (is_a($envelope->getMessage(), $unexpectedMessageClass)) {
-                self::fail("Message $unexpectedMessageClass found, but not expected.");
+        $this->assertMessageIsDispatched($unexpectedMessageClass, 0, "Message $unexpectedMessageClass found, but not expected.");
+    }
+
+    /** @return Envelope[] */
+    public function findMessages(string $class, bool $clear = false): array
+    {
+        $recorder = $this->getMessageRecorder();
+        $messages = [];
+        foreach ($recorder->getMessages() as $key => $envelope) {
+            if (is_a($envelope->getMessage(), $class)) {
+                $messages[] = $envelope;
+                if ($clear) {
+                    $recorder->removeMessages($key);
+                }
             }
         }
+
+        return $messages;
     }
 }
