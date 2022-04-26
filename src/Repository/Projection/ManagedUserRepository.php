@@ -35,13 +35,7 @@ class ManagedUserRepository extends ServiceEntityRepository
         return $this->configurePaginator(
             $this->createFilterQueryBuilder($filter),
             $page,
-            $limit,
-            static function (Query $query) {
-                $query
-                    ->useResultCache(true)
-                    ->setResultCacheLifetime(1800)
-                ;
-            }
+            $limit
         );
     }
 

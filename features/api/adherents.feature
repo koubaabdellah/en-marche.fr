@@ -673,3 +673,333 @@ Feature:
         ]
     }
     """
+
+  Scenario Outline: As a user with (delegated) legislative candidate role I can get columns to list adherents
+    Given I am logged with "<user>" via OAuth client "JeMengage Web"
+    When I send a "GET" request to "/api/v3/adherents/columns?scope=<scope>"
+    Then the response status code should be 200
+    And the JSON should be equal to:
+    """
+    [
+        {
+            "key": "gender",
+            "label": "Genre",
+            "type": "trans",
+            "messages": {
+                "female": "Femme",
+                "male": "Homme",
+                "other": "Autre"
+            },
+            "filter": {
+                "type": "select"
+            }
+        },
+        {
+            "key": "first_name",
+            "label": "Prénom",
+            "filter": {
+                "type": "string"
+            }
+        },
+        {
+            "key": "last_name",
+            "label": "Nom",
+            "filter": {
+                "type": "string"
+            }
+        },
+        {
+            "key": "email_subscription",
+            "label": "Abonné email",
+            "type": "boolean",
+            "filter": {
+                "type": "boolean"
+            }
+        },
+        {
+            "key": "sms_subscription",
+            "label": "Abonné tel",
+            "type": "boolean",
+            "filter": {
+                "type": "boolean"
+            }
+        },
+        {
+            "key": "postal_code",
+            "label": "Code postal",
+            "filter": {
+                "type": "string"
+            }
+        },
+        {
+            "key": "city_code",
+            "label": "Code commune"
+        },
+        {
+            "key": "city",
+            "label": "Commune",
+            "filter": {
+                "type": "string"
+            }
+        },
+        {
+            "key": "department_code",
+            "label": "Code département"
+        },
+        {
+            "key": "department",
+            "label": "Département"
+        },
+        {
+            "key": "region_code",
+            "label": "Code région"
+        },
+        {
+            "key": "region",
+            "label": "Région"
+        },
+        {
+            "key": "interests",
+            "label": "Intérêts",
+            "type": "array|trans",
+            "messages": {
+                "culture": "Culture",
+                "democratie": "Démocratie",
+                "economie": "Économie",
+                "education": "Éducation",
+                "jeunesse": "Jeunesse",
+                "egalite": "Égalité F/H",
+                "europe": "Europe",
+                "inclusion": "Inclusion",
+                "international": "International",
+                "justice": "Justice",
+                "lgbt": "LGBT+",
+                "numerique": "Numérique",
+                "puissance_publique": "Puissance publique",
+                "republique": "République",
+                "ruralite": "Ruralité",
+                "sante": "Santé",
+                "securite_et_defense": "Sécurité et Défense",
+                "solidarites": "Solidarités",
+                "sport": "Sport",
+                "transition_ecologique": "Transition écologique",
+                "travail": "Travail",
+                "villes_et_quartiers": "Villes et quartiers",
+                "famille": "Famille"
+            },
+            "filter": {
+                "type": "select",
+                "options": {
+                    "multiple": true
+                }
+            }
+        }
+    ]
+    """
+    Examples:
+      | user                                    | scope                                           |
+      | senatorial-candidate@en-marche-dev.fr   | legislative_candidate                           |
+      | gisele-berthoux@caramail.com            | delegated_b24fea43-ecd8-4bf4-b500-6f97886ab77c  |
+
+  Scenario Outline: As a user with (delegated) legislative candidate role I can get filters list to filter adherents
+    Given I am logged with "<user>" via OAuth client "JeMengage Web"
+    When I send a "GET" request to "/api/v3/adherents/filters?scope=<scope>&feature=contacts"
+    Then the response status code should be 200
+    And the JSON should be equal to:
+    """
+    [
+        {
+            "code": "gender",
+            "label": "Genre",
+            "options": {
+                "choices": {
+                    "female": "Femme",
+                    "male": "Homme",
+                    "other": "Autre"
+                }
+            },
+            "type": "select"
+        },
+        {
+            "code": "firstName",
+            "label": "Prénom",
+            "options": null,
+            "type": "text"
+        },
+        {
+            "code": "lastName",
+            "label": "Nom",
+            "options": null,
+            "type": "text"
+        },
+        {
+            "code": "age",
+            "label": "Âge",
+            "options": {
+                "first": {
+                    "min": 1,
+                    "max": 200
+                },
+                "second": {
+                    "min": 1,
+                    "max": 200
+                }
+            },
+            "type": "integer_interval"
+        },
+        {
+            "code": "registered",
+            "label": "Adhésion",
+            "options": null,
+            "type": "date_interval"
+        },
+        {
+            "code": "isCommitteeMember",
+            "label": "Membre d'un comité",
+            "options": {
+                "choices": [
+                    "Non",
+                    "Oui"
+                ]
+            },
+            "type": "select"
+        },
+        {
+            "code": "emailSubscription",
+            "label": "Abonné email",
+            "options": {
+                "choices": [
+                    "Non",
+                    "Oui"
+                ]
+            },
+            "type": "select"
+        },
+        {
+            "code": "smsSubscription",
+            "label": "Abonné SMS",
+            "options": {
+                "choices": [
+                    "Non",
+                    "Oui"
+                ]
+            },
+            "type": "select"
+        },
+        {
+            "code": "zones",
+            "label": "Zone géographique",
+            "options": {
+                "url": "/api/v3/zone/autocomplete",
+                "query_param": "q",
+                "value_param": "uuid",
+                "label_param": "name",
+                "multiple": true,
+                "required": false
+            },
+            "type": "autocomplete"
+        }
+    ]
+    """
+    Examples:
+      | user                                    | scope                                           |
+      | senatorial-candidate@en-marche-dev.fr   | legislative_candidate                           |
+      | gisele-berthoux@caramail.com            | delegated_b24fea43-ecd8-4bf4-b500-6f97886ab77c  |
+
+  Scenario Outline: As a user with (delegated) legislative candidate role I can get adherents of my zones
+    Given I am logged with "<user>" via OAuth client "JeMengage Web"
+    When I send a "GET" request to "/api/v3/adherents?scope=<scope>"
+    Then the response status code should be 200
+    And the JSON should be equal to:
+    """
+    {
+        "metadata": {
+            "total_items": 2,
+            "items_per_page": 100,
+            "count": 2,
+            "current_page": 1,
+            "last_page": 1
+        },
+        "items": [
+            {
+                "postal_code": "75008",
+                "city": "Paris 8e",
+                "country": "FR",
+                "first_name": "Député",
+                "last_name": "PARIS I",
+                "gender": "male",
+                "interests": [
+                    "europe",
+                    "numerique"
+                ],
+                "city_code": "75056",
+                "department_code": "75",
+                "department": "Paris",
+                "region_code": "11",
+                "region": "Île-de-France",
+                "sms_subscription": true,
+                "email_subscription": true
+            },
+            {
+                "postal_code": "75008",
+                "city": "Paris 8e",
+                "country": "FR",
+                "first_name": "Jacques",
+                "last_name": "Picard",
+                "gender": "male",
+                "interests": [
+                    "europe",
+                    "numerique",
+                    "sante"
+                ],
+                "city_code": "75056",
+                "department_code": "75",
+                "department": "Paris",
+                "region_code": "11",
+                "region": "Île-de-France",
+                "sms_subscription": true,
+                "email_subscription": true
+            }
+        ]
+    }
+    """
+    When I send a "GET" request to "/api/v3/adherents?scope=<scope>&firstName=Jacques&lastName=Picard&gender=male&registered%5Bstart%5D=2017-01-01&registered%5Bend%5D=2022-01-01&age%5Bmin%5D=25&age%5Bmax%5D=90&isCommitteeMember=1&isCertified=1&emailSubscription=1&smsSubscription=1"
+    Then the response status code should be 200
+    And the JSON should be equal to:
+    """
+    {
+        "metadata": {
+            "total_items": 1,
+            "items_per_page": 100,
+            "count": 1,
+            "current_page": 1,
+            "last_page": 1
+        },
+        "items": [
+            {
+                "postal_code": "75008",
+                "city": "Paris 8e",
+                "country": "FR",
+                "first_name": "Jacques",
+                "last_name": "Picard",
+                "gender": "male",
+                "interests": [
+                    "europe",
+                    "numerique",
+                    "sante"
+                ],
+                "city_code": "75056",
+                "department_code": "75",
+                "department": "Paris",
+                "region_code": "11",
+                "region": "Île-de-France",
+                "sms_subscription": true,
+                "email_subscription": true
+            }
+        ]
+    }
+    """
+    Examples:
+      | user                                    | scope                                           |
+      | senatorial-candidate@en-marche-dev.fr   | legislative_candidate                           |
+      | gisele-berthoux@caramail.com            | delegated_b24fea43-ecd8-4bf4-b500-6f97886ab77c  |
