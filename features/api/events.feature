@@ -1800,7 +1800,7 @@ Feature:
             "city": "75001-75101",
             "city_name": "Paris 1er",
             "country": "FR",
-            "latitude": 48.859599,
+            "latitude": 48.8596,
             "longitude": 2.344967
         },
         "visio_url": "https://en-marche.fr/reunions/123",
@@ -1907,7 +1907,7 @@ Feature:
             "city": "75001-75101",
             "city_name": "Paris 1er",
             "country": "FR",
-            "latitude": 48.859599,
+            "latitude": 48.8596,
             "longitude": 2.344967
         },
         "category": {
