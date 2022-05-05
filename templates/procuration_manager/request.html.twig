@@ -179,7 +179,7 @@
                         Disponibilités ({{ request.foundProxy.countFreeSlots }})
                     </div>
                     <div class="profile-value">
-                        {% include 'procuration/proxy/_available_rounds.html.twig' with { proxy: request.foundProxy } %}
+                        {% include 'procuration/proxy/_available_rounds.html.twig' with { proxy: request.foundProxy, request: request } %}
                     </div>
                 {% endif %}
             {% else %}

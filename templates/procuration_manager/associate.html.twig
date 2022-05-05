@@ -146,9 +146,9 @@
             <div class="profile-label">
                 Disponibilités ({{ proxy.countFreeSlots }})
             </div>
-            <div class="profile-value">
+            <div class="profile-value b__nudge--left">
                 <span id="proxy-election">
-                    {% include 'procuration/proxy/_available_rounds.html.twig' with { proxy: proxy } %}
+                    {% include 'procuration/proxy/_available_rounds.html.twig' with { proxy: proxy, request: request } %}
                 </span>
             </div>
         </div>
