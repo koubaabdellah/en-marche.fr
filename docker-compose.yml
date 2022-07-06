@@ -30,7 +30,7 @@ services:
     ## testing
     ####################
     selenium:
-        image: selenium/standalone-firefox-debug:2.53.1
+        image: selenium/standalone-firefox:85.0
         shm_size: 2g
 
     ## common
