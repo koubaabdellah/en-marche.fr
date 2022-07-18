@@ -29,7 +29,6 @@ use App\Form\Admin\CandidateManagedAreaType;
 use App\Form\Admin\CoordinatorManagedAreaType;
 use App\Form\Admin\JecouteManagedAreaType;
 use App\Form\Admin\LreAreaType;
-use App\Form\Admin\MunicipalChiefManagedAreaType;
 use App\Form\Admin\ReferentManagedAreaType;
 use App\Form\Admin\SenatorAreaType;
 use App\Form\Admin\SenatorialCandidateManagedAreaType;
@@ -453,16 +452,6 @@ class AdherentAdmin extends AbstractAdmin
                     ])
                 ->end()
                 ->with('Élections 🇫🇷', ['class' => 'col-md-6'])
-                    ->add('municipalChiefManagedArea', MunicipalChiefManagedAreaType::class, [
-                        'label' => 'Candidat Municipales 2020 🇫🇷',
-                        'help' => <<<HELP
-            Laisser vide si l'adhérent n'est pas chef municipal. 
-            Utiliser les codes INSEE des villes (54402 pour NORROY-LE-SEC). <br/> 
-            Utiliser <strong>75100</strong> pour la ville de Paris, 
-            <strong>13200</strong> - Marseille, <strong>69380</strong> - Lyon
-    HELP
-                        ,
-                    ])
                     ->add('senatorialCandidateManagedArea', SenatorialCandidateManagedAreaType::class, [
                         'label' => 'Candidat Sénatoriales 2020',
                     ])

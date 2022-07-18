@@ -16,13 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 abstract class AbstractApplicationRequestController extends AbstractController
 {
-    private $enableMunicipalSpace;
-
-    public function __construct(bool $enableMunicipalSpace)
-    {
-        $this->enableMunicipalSpace = $enableMunicipalSpace;
-    }
-
     /**
      * @Route("candidature-colistiers", name="_candidate_running_mate_list", defaults={"type": ApplicationRequestTypeEnum::RUNNING_MATE}, methods={"GET", "POST"})
      * @Route("candidature-benevoles", name="_candidate_volunteer_list", defaults={"type": ApplicationRequestTypeEnum::VOLUNTEER}, methods={"GET", "POST"})
@@ -128,9 +121,6 @@ abstract class AbstractApplicationRequestController extends AbstractController
 
     protected function checkIfSpaceEnabled(): void
     {
-        if (false === $this->enableMunicipalSpace) {
-            throw $this->createNotFoundException();
-        }
     }
 
     protected function renderTemplate(string $template, array $parameters = []): Response

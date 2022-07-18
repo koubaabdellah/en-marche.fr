@@ -110,18 +110,6 @@ class AdherentRoleFilter extends CallbackFilter
                     $where->add('assessorRole IS NOT NULL AND assessorRole.votePlace IS NOT NULL');
                 }
 
-                // Municipal Manager
-                if (\in_array(AdherentRoleEnum::MUNICIPAL_MANAGER, $value['value'], true)) {
-                    $qb->leftJoin(sprintf('%s.municipalManagerRole', $alias), 'municipalManagerRole');
-                    $where->add('municipalManagerRole IS NOT NULL');
-                }
-
-                // Municipal Manager Supervisor
-                if (\in_array(AdherentRoleEnum::MUNICIPAL_MANAGER_SUPERVISOR, $value['value'], true)) {
-                    $qb->leftJoin(sprintf('%s.municipalManagerSupervisorRole', $alias), 'municipalManagerSupervisorRole');
-                    $where->add('municipalManagerSupervisorRole IS NOT NULL');
-                }
-
                 // Election results reporter
                 if (\in_array(AdherentRoleEnum::ELECTION_RESULTS_REPORTER, $value['value'], true)) {
                     $where->add(sprintf('%s.electionResultsReporter = :election_result_reporter', $alias));
@@ -137,12 +125,6 @@ class AdherentRoleFilter extends CallbackFilter
                 // User
                 if (\in_array(AdherentRoleEnum::USER, $value['value'], true)) {
                     $where->add(sprintf('%s.adherent = 0', $alias));
-                }
-
-                // Municipal chief
-                if (\in_array(AdherentRoleEnum::MUNICIPAL_CHIEF, $value['value'], true)) {
-                    $qb->leftJoin(sprintf('%s.municipalChiefManagedArea', $alias), 'municipalChiefManagedArea');
-                    $where->add('municipalChiefManagedArea IS NOT NULL');
                 }
 
                 // Print privilege
