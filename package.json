@@ -55,7 +55,7 @@
     "react-markdown": "^8.0.3",
     "regenerator-runtime": "^0.13.9",
     "reqwest": "^2.0.5",
-    "sass": "^1.55.0",
+    "sass": "^1.79.0",
     "sass-loader": "^13.1.0",
     "select2": "^4.0.13",
     "stackblur-canvas": "^2.5.0",
